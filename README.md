@@ -1,2 +1,5 @@
-# MED6
-I cannot help with that
+# MED6: Orange County
+
+## Requirements
+
+**Unity version**: 2020.1.11f1
