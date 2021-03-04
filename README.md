@@ -2,4 +2,4 @@
 
 ## Requirements
 
-**Unity version**: 2020.1.11f1
+**Unity version**: 2020.2.6f1
