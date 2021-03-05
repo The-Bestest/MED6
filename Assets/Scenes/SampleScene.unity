@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.44193277, g: 0.49088883, b: 0.57083726, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 17226355}
   - component: {fileID: 17226356}
+  - component: {fileID: 17226357}
   m_Layer: 0
   m_Name: CharacterController
   m_TagString: Untagged
@@ -167,6 +168,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 716072795}
+  Threshold: {fileID: 70522484}
+--- !u!114 &17226357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17226354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dd36e0ccfb67ea48a7bffeff0796153, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rejTrials: 5
+  accTrials: 10
+  fabTrials: 5
+  assistSuccessTrials: 0
+  assistFailTrials: 0
+  explicitShamTrials: 0
+  noInputReceivedFabAlarm: 0.5
+  fabAlarmVariability: 0.5
+  interTrialIntervalSeconds: 4.5
+  inputWindowSeconds: 1
+  onGameStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  gameDecision:
+    m_PersistentCalls:
+      m_Calls: []
+  onInputWindowChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onGameTimeUpdate:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &70522483
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,7 +234,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Host: localhost
   Port: 5677
-  classificationThreshold: 0.7
+  thresholdActive: 1
+  classificationThreshold: 0.45
   consecutiveBufferSize: 8
   motorImageryEvent: 
   bciProcessingMode: 0
@@ -330,7 +367,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199595262}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.76, z: 0}
+  m_LocalPosition: {x: 0, y: -0.841, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
@@ -343,7 +380,7 @@ LightingSettings:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Settings.lighting
-  serializedVersion: 2
+  serializedVersion: 3
   m_GIWorkflowMode: 1
   m_EnableBakedLightmaps: 1
   m_EnableRealtimeLightmaps: 0
@@ -365,7 +402,7 @@ LightingSettings:
   m_MixedBakeMode: 2
   m_LightmapsBakeMode: 1
   m_FilterMode: 1
-  m_LightmapParameters: {fileID: 0}
+  m_LightmapParameters: {fileID: 15204, guid: 0000000000000000f000000000000000, type: 0}
   m_ExportTrainingData: 0
   m_TrainingDataDestination: TrainingData
   m_RealtimeResolution: 2
@@ -382,7 +419,7 @@ LightingSettings:
   m_PVREnvironmentReferencePointCount: 2048
   m_LightProbeSampleCountMultiplier: 4
   m_PVRBounces: 2
-  m_PVRRussianRouletteStartBounce: 2
+  m_PVRMinBounces: 1
   m_PVREnvironmentMIS: 0
   m_PVRFilteringMode: 2
   m_PVRDenoiserTypeDirect: 0
@@ -432,7 +469,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -473,6 +510,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &705507995
@@ -482,13 +520,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalRotation: {x: 0.5479828, y: -0.12401534, z: 0.40303823, w: 0.72242314}
+  m_LocalPosition: {x: -0.172, y: 2.705, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 63.09, y: 35.455, z: 80.519}
 --- !u!1 &716072795
 GameObject:
   m_ObjectHideFlags: 0

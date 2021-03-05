@@ -48,6 +48,7 @@ public class OpenBCIInput : MonoBehaviour
     private StreamReader theReader;
     public string Host = "localhost";
     public Int32 Port = 5677;
+    public bool thresholdActive;
 
     private MotorImageryEvent classification = MotorImageryEvent.Rest;
     public float classificationThreshold = 0.7f;
