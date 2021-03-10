@@ -49,6 +49,8 @@ public class OpenBCIInput : MonoBehaviour
     public string Host = "localhost";
     public Int32 Port = 5677;
     public bool thresholdActive;
+    public bool useDiscreteInput;
+
 
     private MotorImageryEvent classification = MotorImageryEvent.Rest;
     public float classificationThreshold = 0.7f;

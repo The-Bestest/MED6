@@ -10,15 +10,14 @@ public class ContinuousInput : MonoBehaviour
     private GameObject character;
     private Rigidbody characterBody;
 
-    public OpenBCIInput Threshold;
-    
+    public OpenBCIInput openBCIInput;
 
 
-    
+
+
     // Start is called before the first frame update
     void Start()
     {
-        Threshold = Threshold.GetComponent<OpenBCIInput>();
 
         if (character == null)
         {
@@ -35,23 +34,26 @@ public class ContinuousInput : MonoBehaviour
     }
     public void OnBCIEvent(float value)
     {
-        if (Threshold.thresholdActive == false)
-            { 
+        Debug.Log(openBCIInput);
+        if (openBCIInput.useDiscreteInput == true) 
+        {
+            return;
+        }
+        if (openBCIInput.thresholdActive == false)
+        { 
              Vector3 force = new Vector3(0, value, 0);
              characterBody.AddForce(force, ForceMode.Impulse);
              Debug.Log(value.ToString());
-            }
+        }
         else
+        {
+            if(openBCIInput.classificationThreshold < value)
             {
-            if(Threshold.classificationThreshold < value)
-                {
-                float NormalizedForce = (value-Threshold.classificationThreshold)/(1-Threshold.classificationThreshold);
+                float NormalizedForce = (value- openBCIInput.classificationThreshold)/(1- openBCIInput.classificationThreshold);
                 Vector3 force = new Vector3(0, NormalizedForce, 0);
                 characterBody.AddForce(force, ForceMode.Impulse);
-                Debug.Log(value.ToString());
-                Debug.Log(NormalizedForce.ToString());
             }
-            }
+        }
     }
 
 }

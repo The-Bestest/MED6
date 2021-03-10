@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         loggingManager = GameObject.Find("LoggingManager").GetComponent<LoggingManager>();
-        urn = GetComponent<UrnModel>();
+        urn = gameObject.GetComponent<UrnModel>();
         SetupMechanisms();
         SetupUrn();
         LogMeta();
