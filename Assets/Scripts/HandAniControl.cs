@@ -17,26 +17,7 @@ public class HandAniControl : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            tempVal = 0.8f;
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            tempVal = 0.3f;
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            tempVal = 0.5f;
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            anim.SetBool("Open", false);
-            anim.SetBool("Close", true);
-            anim.SetBool("Start", true);
-        }
-        AniControl(tempVal);
-        Debug.Log(tempVal);
+
     }
 
     public void AniControl(float currentValue)
