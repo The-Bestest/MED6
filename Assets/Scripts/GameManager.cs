@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     private float inputWindowSeconds = 1f;
     private float inputWindowTimer = 0.0f;
     private float interTrialTimer = 0.0f;
-    private InputWindowState inputWindow = InputWindowState.Closed;
+    public InputWindowState inputWindow { get; private set; }
     private int inputIndex = 0;
 
     private GameState gameState = GameState.Stopped;
@@ -145,6 +145,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        inputWindow = InputWindowState.Closed;
         loggingManager = GameObject.Find("LoggingManager").GetComponent<LoggingManager>();
         urn = gameObject.GetComponent<UrnModel>();
         SetupMechanisms();
