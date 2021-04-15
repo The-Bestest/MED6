@@ -54,6 +54,7 @@ public class OpenBCIInput : MonoBehaviour
 
     private MotorImageryEvent classification = MotorImageryEvent.Rest;
     public float classificationThreshold = 0.7f;
+    public float terminalThreshold = 0.7f;
 
     private int[] consecThresholdBuffer;
     private float[] consecThresholdBufferVal;

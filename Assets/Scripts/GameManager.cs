@@ -83,8 +83,29 @@ public enum TrialType
     ExplicitSham
 }
 
+#region OurAddedCode
+public enum Stage // Not used atm, saving in case
+{
+    InterTrial,
+    Cue,
+    Prep,
+    Task
+}
+#endregion
+
 public class GameManager : MonoBehaviour
 {
+    #region OurAddedCode
+    public float cueAmount = 2;
+    public float prepAmount = 4;
+    public float interTrialAmount = 6;
+
+    public Stage currentStage; // Not in use
+
+    public GameObject balloon;
+    public Material balloonColour;
+    #endregion
+
     [Header("Trial Setup")]
     [Tooltip("The total number of trials is calculated from the trial counts set here.")]
     public int rejTrials = 5;
@@ -119,7 +140,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float inputWindowSeconds = 1f;
     private float inputWindowTimer = 0.0f;
-    private float interTrialTimer = 0.0f;
+    private float totalWindowTimer = 0.0f;
     public InputWindowState inputWindow { get; private set; }
     private int inputIndex = 0;
 
@@ -151,6 +172,12 @@ public class GameManager : MonoBehaviour
         SetupMechanisms();
         SetupUrn();
         LogMeta();
+
+        cueAmount = cueAmount / interTrialIntervalSeconds; // Our code
+        prepAmount = prepAmount / interTrialIntervalSeconds; // Our code
+        interTrialAmount = interTrialAmount / interTrialIntervalSeconds; // Our code
+
+        balloonColour = balloon.GetComponentInChildren<Renderer>().material; // Our code
     }
 
     private void SetupMechanisms()
@@ -248,7 +275,7 @@ public class GameManager : MonoBehaviour
             {"Event", eventLabel},
             {"InputWindow", System.Enum.GetName(typeof(InputWindowState), inputWindow)},
             {"InputWindowOrder", inputIndex},
-            {"InterTrialTimer", interTrialTimer},
+            {"InterTrialTimer", totalWindowTimer},
             {"InputWindowTimer", inputWindowTimer},
             {"GameState", System.Enum.GetName(typeof(GameState), gameState)},
             {"CurrentFabAlarm", currentFabAlarm},
@@ -282,16 +309,32 @@ public class GameManager : MonoBehaviour
             if (inputWindow == InputWindowState.Closed)
             {
                 alarmFired = false;
-                interTrialTimer += Time.deltaTime;
-                if (interTrialTimer > interTrialIntervalSeconds && currentTrial < trialsTotal)
+                totalWindowTimer += Time.deltaTime; // Renamed interTrialTimer to totalWindowTimer
+
+                if(totalWindowTimer < interTrialIntervalSeconds * interTrialAmount) // Our code
+                { // Our code
+                    balloonColour.color = Color.white; // Our code
+                    //balloon.SetActive(true); // Our code
+                } // Our code
+                else if (totalWindowTimer < interTrialIntervalSeconds * (interTrialAmount + cueAmount)) // Our code
+                { // Our code
+                    balloonColour.color = Color.red; // Our code
+                } // Our code
+                else
+                { // Our code
+                    balloonColour.color = Color.yellow; // Our code
+                } // Our code
+
+                if (totalWindowTimer > interTrialIntervalSeconds && currentTrial < trialsTotal)
                 {
-                    interTrialTimer = 0f;
+                    balloonColour.color = Color.green; // Our code
+                    totalWindowTimer = 0f;
                     inputWindow = InputWindowState.Open;
                     SetFabAlarmVariability();
                     onInputWindowChanged.Invoke(inputWindow);
                     LogEvent("InputWindowChange");
                 }
-                else if (interTrialTimer > interTrialIntervalSeconds)
+                else if (totalWindowTimer > interTrialIntervalSeconds)
                 {
                     EndGame();
                 }
@@ -311,6 +354,7 @@ public class GameManager : MonoBehaviour
                         inputNumber = fabInputNumber
                     };
                     MakeInputDecision(fabInputData, false);
+                    //balloonColour.color = Color.white; // Our code
                     alarmFired = true;
                 }
                 else if (inputWindowTimer > inputWindowSeconds)
@@ -323,7 +367,7 @@ public class GameManager : MonoBehaviour
             }
         }
         GameTimers gameTimers = new GameTimers();
-        gameTimers.interTrialTimer = interTrialTimer;
+        gameTimers.interTrialTimer = totalWindowTimer;
         gameTimers.inputWindowTimer = inputWindowTimer;
         onGameTimeUpdate.Invoke(gameTimers);
     }
@@ -356,7 +400,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        interTrialTimer = 0f;
+        totalWindowTimer = 0f;
         if (inputWindow == InputWindowState.Open)
         {
             CloseInputWindow();
@@ -409,7 +453,7 @@ public class GameManager : MonoBehaviour
     {
         // update the window state.
         inputWindow = InputWindowState.Closed;
-        interTrialTimer -= (inputWindowSeconds - inputWindowTimer);
+        totalWindowTimer -= (inputWindowSeconds - inputWindowTimer);
         inputWindowTimer = 0f;
         onInputWindowChanged.Invoke(inputWindow);
         LogEvent("InputWindowChange");
@@ -501,7 +545,7 @@ public class GameManager : MonoBehaviour
     public void ResetTrial()
     {
         inputWindowTimer = 0f;
-        interTrialTimer = 0.001f;
+        totalWindowTimer = 0.001f;
         inputWindow = InputWindowState.Closed;
     }
 
