@@ -11,7 +11,6 @@ public class HandAniControl : MonoBehaviour
     public Animator balloonAnim;
 
     //float inputThreshold = 0; // Threshold for when input is accepted during task window (Should be removed when scene is setup to work with BCI)
-    float latestValue = 0; // Used to keep track of value when user go above threshold and then back below
 
     bool taskCompleted = false;
 
@@ -37,29 +36,36 @@ public class HandAniControl : MonoBehaviour
                 {
                     currentValue = (currentValue - openBCIInput.classificationThreshold) / (1 - openBCIInput.classificationThreshold);
                 }
-                latestValue = currentValue;
-            }
-            else
-            {
-                latestValue = 0.05f;
-            }
 
-            if (gameManager.inputWindow == InputWindowState.Open && !taskCompleted)
+                DoTaskContinuous(playTime, currentValue);
+            }
+            else if ((gameManager.inputWindow == InputWindowState.Closed || taskCompleted) /*&& !anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle")*/)
             {
-                DoTaskContinuous(playTime, latestValue);
+                TaskWindowClosed(playTime);
+                if (taskCompleted && !balloonAnim.GetCurrentAnimatorStateInfo(0).IsName("BalloonAni"))
+                {
+                    balloon.SetActive(false);
+                }
+            }
+            else if (currentValue < openBCIInput.classificationThreshold && gameManager.inputWindow == InputWindowState.Open)
+            {
+                if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)"))
+                {
+                    anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
+                    balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
+                }
             }
         }
         else if (openBCIInput.useDiscreteInput)
-        { 
+        {
             if (currentValue > openBCIInput.classificationThreshold/*inputThreshold*/ && gameManager.inputWindow == InputWindowState.Open && !taskCompleted)
             {
                 DoTaskDiscrete(playTime);
             }
-        }
-
-        if (gameManager.inputWindow == InputWindowState.Closed || taskCompleted)
-        {
-            TaskWindowClosed(playTime);
+            else if (taskCompleted && !balloonAnim.GetCurrentAnimatorStateInfo(0).IsName("BalloonAni"))
+            {
+                balloon.SetActive(false);
+            }
         }
     }
 
@@ -73,7 +79,6 @@ public class HandAniControl : MonoBehaviour
 
     private void CompletedTask()
     {
-        balloon.SetActive(false);
         Debug.Log("Popped");
         taskCompleted = true;
     }
@@ -88,6 +93,8 @@ public class HandAniControl : MonoBehaviour
     {
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)"))
         {
+            balloonAnim.SetBool("Open", false);
+            anim.SetBool("Open", false);
             anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
             balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
         }
@@ -96,22 +103,26 @@ public class HandAniControl : MonoBehaviour
     #endregion
 
     #region continuous input
-    private void DoTaskContinuous(float playTime, float latestValue)
+    private void DoTaskContinuous(float playTime, float currentValue)
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle") && latestValue > 0.05f)
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle"))
         {
             anim.SetBool("Open", true);
-            anim.Play("HandSqueeze(Close)", 0);
+            //anim.Play("HandSqueeze(Close)", 0);
             balloonAnim.SetBool("Open", true);
-            balloonAnim.Play("BalloonAni", 0);
+            //balloonAnim.Play("BalloonAni", 0);
+
+            Debug.Log("Hand is closing, opening hand at: " + playTime);
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)"))
         {
             if (playTime > openBCIInput.terminalThreshold)
             {
+                balloonAnim.SetBool("Open", false);
+                anim.SetBool("Open", false);
                 CompletedTask();
             }
-            else if (playTime > latestValue)
+            else if (playTime > currentValue)
             {
                 anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
                 balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
@@ -119,7 +130,7 @@ public class HandAniControl : MonoBehaviour
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Open)"))
         {
-            if (playTime >= 1 - latestValue)
+            if (playTime >= 1 - currentValue)
             {
                 anim.Play("HandSqueeze(Close)", 0, 1 - playTime);
                 balloonAnim.Play("BalloonAni", 0, 1 - playTime);
@@ -131,13 +142,11 @@ public class HandAniControl : MonoBehaviour
     #region discrete input
     private void DoTaskDiscrete (float playTime)
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle"))
+        if (!taskCompleted)//anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle"))
         {
+            Debug.Log("Testing");
             anim.Play("HandSqueeze(Close)", 0);
             balloonAnim.Play("BalloonAni", 0);
-        }
-        else if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)") && playTime > openBCIInput.terminalThreshold)
-        {
             CompletedTask();
         }
     }
