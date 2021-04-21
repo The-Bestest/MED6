@@ -28,6 +28,11 @@ public class HandAniControl : MonoBehaviour
     public void AniControl(float currentValue)
     {
         float playTime = anim.GetCurrentAnimatorStateInfo(0).normalizedTime; //Value of 0 to 1 of the current playtime of animation
+        if (playTime >= 1 && !anim.GetCurrentAnimatorStateInfo(0).IsName("SittingIdle"))
+        {
+            return;
+        }
+        Debug.Log("This is the first one: " + playTime);
         if (!openBCIInput.useDiscreteInput)
         {
             if (currentValue > openBCIInput.classificationThreshold/*inputThreshold*/ && gameManager.inputWindow == InputWindowState.Open && !taskCompleted) // Change inputThreshold to openBCIInput.classificationThreshold
@@ -53,6 +58,7 @@ public class HandAniControl : MonoBehaviour
                 {
                     anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
                     balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
+                    Debug.Log("Animation changed 1:" + (1 - playTime));
                 }
             }
         }
@@ -91,12 +97,16 @@ public class HandAniControl : MonoBehaviour
     #region Window close or task complete
     private void TaskWindowClosed(float playTime)
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)"))
+        if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Close)")) // This looks like a problem
         {
-            balloonAnim.SetBool("Open", false);
-            anim.SetBool("Open", false);
+            if (balloonAnim.GetBool("Open"))
+            {    
+                balloonAnim.SetBool("Open", false);
+                anim.SetBool("Open", false);
+            }
             anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
             balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
+            Debug.Log("Animation changed 2:" + (1 - playTime));
         }
     }
 
@@ -126,6 +136,7 @@ public class HandAniControl : MonoBehaviour
             {
                 anim.Play("HandSqueeze(Open)", 0, 1 - playTime);
                 balloonAnim.Play("AntiBalloonAni", 0, 1 - playTime);
+                Debug.Log("Animation changed 3:" + (1- playTime));
             }
         }
         else if (anim.GetCurrentAnimatorStateInfo(0).IsName("HandSqueeze(Open)"))
@@ -134,6 +145,7 @@ public class HandAniControl : MonoBehaviour
             {
                 anim.Play("HandSqueeze(Close)", 0, 1 - playTime);
                 balloonAnim.Play("BalloonAni", 0, 1 - playTime);
+                Debug.Log("Animation changed 4:" + (1 - playTime));
             }
         }
     }
