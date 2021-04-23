@@ -33,7 +33,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 8426163392889761163}
-    m_Position: {x: 300, y: 130, z: 0}
+    m_Position: {x: 550, y: 160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 2140299571825798943}
     m_Position: {x: 300, y: 30, z: 0}
@@ -49,7 +49,7 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 570, y: 230, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: 1553308851868304704}
+  m_DefaultState: {fileID: 8426163392889761163}
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -59,8 +59,8 @@ AnimatorController:
   m_Name: balloon
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Open
-    m_Type: 4
+  - m_Name: Direction2
+    m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -88,8 +88,7 @@ AnimatorState:
   m_Name: BalloonIdle
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 5095843354973247865}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -115,8 +114,7 @@ AnimatorState:
   m_Name: AntiBalloonAni
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 3852887915573358214}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -128,7 +126,7 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 62cbb187abfd5934ca0f4a3bb49914ac, type: 2}
   m_Tag: 
-  m_SpeedParameter: 
+  m_SpeedParameter: DIrection
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
@@ -189,20 +187,19 @@ AnimatorState:
   m_Name: BalloonAni
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -4332257361387182342}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
   m_Mirror: 0
-  m_SpeedParameterActive: 0
+  m_SpeedParameterActive: 1
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
   m_Motion: {fileID: 7400000, guid: 1fc95ee05e2936e4b8c14d773de671e1, type: 2}
   m_Tag: 
-  m_SpeedParameter: 
+  m_SpeedParameter: Direction2
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 

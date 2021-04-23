@@ -313,8 +313,9 @@ public class GameManager : MonoBehaviour
 
                 if(totalWindowTimer < interTrialIntervalSeconds * interTrialAmount) // Our code
                 { // Our code
+                    GameObject balloonChild = balloon.transform.GetChild(0).gameObject;
+                    balloonChild.SetActive(true);
                     balloonColour.color = Color.white; // Our code
-                    //balloon.SetActive(true); // Our code
                 } // Our code
                 else if (totalWindowTimer < interTrialIntervalSeconds * (interTrialAmount + cueAmount)) // Our code
                 { // Our code
