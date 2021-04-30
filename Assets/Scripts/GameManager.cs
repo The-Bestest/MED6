@@ -100,6 +100,8 @@ public class GameManager : MonoBehaviour
     public float prepAmount = 4;
     public float interTrialAmount = 6;
 
+    public AudioSource buzz;
+
     public Stage currentStage; // Not in use
 
     public GameObject balloon;
@@ -314,11 +316,12 @@ public class GameManager : MonoBehaviour
                 if(totalWindowTimer < interTrialIntervalSeconds * interTrialAmount) // Our code
                 { // Our code
                     GameObject balloonChild = balloon.transform.GetChild(0).gameObject;
-                    balloonChild.SetActive(true);
+                    balloonChild.SetActive(true); 
                     balloonColour.color = Color.white; // Our code
                 } // Our code
                 else if (totalWindowTimer < interTrialIntervalSeconds * (interTrialAmount + cueAmount)) // Our code
                 { // Our code
+                    Debug.Log("Trial:" + currentTrial);
                     balloonColour.color = Color.red; // Our code
                 } // Our code
                 else
@@ -335,7 +338,7 @@ public class GameManager : MonoBehaviour
                     onInputWindowChanged.Invoke(inputWindow);
                     LogEvent("InputWindowChange");
                 }
-                else if (totalWindowTimer > interTrialIntervalSeconds)
+                else if (currentTrial == trialsTotal)
                 {
                     EndGame();
                 }
@@ -364,6 +367,7 @@ public class GameManager : MonoBehaviour
                     // The input window expired
                     MakeInputDecision(null, true);
                     alarmFired = false;
+
                 }
             }
         }
@@ -458,9 +462,14 @@ public class GameManager : MonoBehaviour
         inputWindowTimer = 0f;
         onInputWindowChanged.Invoke(inputWindow);
         LogEvent("InputWindowChange");
+        GameObject balloonChild = balloon.transform.GetChild(0).gameObject;
+        if (balloonChild.activeSelf)
+        {
+            buzz.Play(0);
+        }
 
-        // store the input decision.
-        urn.SetEntryResult(System.Enum.GetName(typeof(TrialType), trialResult));
+            // store the input decision.
+            urn.SetEntryResult(System.Enum.GetName(typeof(TrialType), trialResult));
 
         CalculateRecogRate();
         // Send Decision Data

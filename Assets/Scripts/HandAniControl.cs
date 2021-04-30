@@ -69,7 +69,7 @@ public class HandAniControl : MonoBehaviour
             balloonAnim.SetFloat("Direction2", -1);
         }
 
-        if(playTime > 0.99f)
+        if(playTime >= 0.99f)
         {
             BalloonPop();
         }
