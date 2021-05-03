@@ -106,6 +106,10 @@ public class GameManager : MonoBehaviour
 
     public GameObject balloon;
     public Material balloonColour;
+
+    public AudioSource Fivetrial;
+    public AudioSource FifteenTrial;
+    public AudioSource Finish;
     #endregion
 
     [Header("Trial Setup")]
@@ -315,13 +319,24 @@ public class GameManager : MonoBehaviour
 
                 if(totalWindowTimer < interTrialIntervalSeconds * interTrialAmount) // Our code
                 { // Our code
+                    Debug.Log("Trial:" + currentTrial);
+                    switch (trialsTotal - currentTrial)
+                    {
+                        case 5:
+                            Fivetrial.Play();
+                            break;
+                        case 15:
+                            FifteenTrial.Play();
+                            break;
+                        default:
+                            break;
+                    }
                     GameObject balloonChild = balloon.transform.GetChild(0).gameObject;
-                    balloonChild.SetActive(true); 
+                    balloonChild.SetActive(true);
                     balloonColour.color = Color.white; // Our code
                 } // Our code
                 else if (totalWindowTimer < interTrialIntervalSeconds * (interTrialAmount + cueAmount)) // Our code
                 { // Our code
-                    Debug.Log("Trial:" + currentTrial);
                     balloonColour.color = Color.red; // Our code
                 } // Our code
                 else
@@ -340,6 +355,7 @@ public class GameManager : MonoBehaviour
                 }
                 else if (currentTrial == trialsTotal)
                 {
+                    Finish.Play();
                     EndGame();
                 }
             }
