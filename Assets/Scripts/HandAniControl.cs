@@ -16,6 +16,8 @@ public class HandAniControl : MonoBehaviour
 
     bool success = false;
 
+    float playTime;
+
     GameObject balloonChild;
 
     private void Start()
@@ -26,22 +28,16 @@ public class HandAniControl : MonoBehaviour
         balloonChild = balloon.transform.GetChild(0).gameObject;
     }
 
-    public void AniControl(float currentValue)
+    private void Update()
     {
-        float playTime = handAnim.GetCurrentAnimatorStateInfo(0).normalizedTime; //Value of 0 to 1 of the current playtime of animation
-        if (!openBCIInput.useDiscreteInput && currentValue > openBCIInput.classificationThreshold && gameManager.inputWindow == InputWindowState.Open && balloonChild.activeSelf)
+        playTime = handAnim.GetCurrentAnimatorStateInfo(0).normalizedTime; //Value of 0 to 1 of the current playtime of animation
+
+        if (playTime >= 0.95f && !openBCIInput.useDiscreteInput)
         {
-            if (openBCIInput.thresholdActive)
-            {
-                currentValue = (currentValue - openBCIInput.classificationThreshold) / (openBCIInput.terminalThreshold - openBCIInput.classificationThreshold);
-            }
-            DoContinuousTask(playTime, currentValue);
+            BalloonPop();
         }
-        else if (openBCIInput.useDiscreteInput && ((currentValue > openBCIInput.terminalThreshold && gameManager.inputWindow == InputWindowState.Open) || success) && balloonChild.activeSelf)
-        {
-            DoDiscreteTask(playTime);
-        }
-        else if(gameManager.inputWindow == InputWindowState.Closed || !balloonChild.activeSelf)
+
+        if (gameManager.inputWindow == InputWindowState.Closed || !balloonChild.activeSelf)
         {
             if (playTime > 0)
             {
@@ -53,6 +49,29 @@ public class HandAniControl : MonoBehaviour
                 handAnim.SetFloat("Direction", 0);
                 balloonAnim.SetFloat("Direction2", 0);
             }
+        }
+    }
+
+    public void AniControl(float currentValue)
+    {
+        if (!openBCIInput.useDiscreteInput && currentValue > openBCIInput.classificationThreshold && gameManager.inputWindow == InputWindowState.Open && balloonChild.activeSelf)
+        {
+            if (openBCIInput.thresholdActive)
+            {
+                currentValue = (currentValue - openBCIInput.classificationThreshold) / (openBCIInput.terminalThreshold - openBCIInput.classificationThreshold);
+                if (currentValue > 0)
+                {
+                    DoContinuousTask(playTime, currentValue);
+                }
+            }
+            else
+            {
+                DoContinuousTask(playTime, currentValue);
+            }
+        }
+        else if (openBCIInput.useDiscreteInput && ((currentValue > openBCIInput.terminalThreshold && gameManager.inputWindow == InputWindowState.Open) || success) && balloonChild.activeSelf)
+        {
+            DoDiscreteTask(playTime);
         }
     }
     void DoContinuousTask(float playTime, float currentValue)
@@ -67,11 +86,6 @@ public class HandAniControl : MonoBehaviour
         {
             handAnim.SetFloat("Direction", -1);
             balloonAnim.SetFloat("Direction2", -1);
-        }
-
-        if(playTime >= 0.99f)
-        {
-            BalloonPop();
         }
         //handAnim.Play("HandSqueeze(Close)", 0);
         //balloonAnim.Play("BalloonAni", 0);
