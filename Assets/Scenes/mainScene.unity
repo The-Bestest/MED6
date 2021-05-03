@@ -2362,7 +2362,7 @@ MonoBehaviour:
   balloon: {fileID: 818587853}
   balloonColour: {fileID: 0}
   rejTrials: 0
-  accTrials: 3
+  accTrials: 20
   fabTrials: 0
   assistSuccessTrials: 0
   assistFailTrials: 0
@@ -3306,7 +3306,7 @@ MonoBehaviour:
   thresholdActive: 0
   useDiscreteInput: 0
   classificationThreshold: 0.3
-  terminalThreshold: 0.7
+  terminalThreshold: 0.8
   consecutiveBufferSize: 8
   motorImageryEvent: 
   bciProcessingMode: 1
@@ -8128,7 +8128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cam: {fileID: 1926361084}
-  constrain: 0
+  constrain: 1
 --- !u!1 &1986635379
 GameObject:
   m_ObjectHideFlags: 0
