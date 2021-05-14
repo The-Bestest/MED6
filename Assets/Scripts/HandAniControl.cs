@@ -31,12 +31,10 @@ public class HandAniControl : MonoBehaviour
     private void Update()
     {
         playTime = handAnim.GetCurrentAnimatorStateInfo(0).normalizedTime; //Value of 0 to 1 of the current playtime of animation
-
-        if (playTime >= 0.95f && !openBCIInput.useDiscreteInput)
+        if (playTime >= 0.99f && !openBCIInput.useDiscreteInput)
         {
             BalloonPop();
         }
-
         if (gameManager.inputWindow == InputWindowState.Closed || !balloonChild.activeSelf)
         {
             if (playTime > 0)
@@ -56,18 +54,23 @@ public class HandAniControl : MonoBehaviour
     {
         if (!openBCIInput.useDiscreteInput && currentValue > openBCIInput.classificationThreshold && gameManager.inputWindow == InputWindowState.Open && balloonChild.activeSelf)
         {
-            if (openBCIInput.thresholdActive)
-            {
+            //if (openBCIInput.thresholdActive)
+            //{
                 currentValue = (currentValue - openBCIInput.classificationThreshold) / (openBCIInput.terminalThreshold - openBCIInput.classificationThreshold);
                 if (currentValue > 0)
                 {
                     DoContinuousTask(playTime, currentValue);
                 }
-            }
-            else
-            {
-                DoContinuousTask(playTime, currentValue);
-            }
+            //}
+            //else
+            //{
+            //    DoContinuousTask(playTime, currentValue);
+            //}
+        }
+        else if (!openBCIInput.useDiscreteInput && currentValue < openBCIInput.classificationThreshold && gameManager.inputWindow == InputWindowState.Open && balloonChild.activeSelf && playTime > 0)
+        {
+            handAnim.SetFloat("Direction", -1);
+            balloonAnim.SetFloat("Direction2", -1);
         }
         else if (openBCIInput.useDiscreteInput && ((currentValue > openBCIInput.terminalThreshold && gameManager.inputWindow == InputWindowState.Open) || success) && balloonChild.activeSelf)
         {
@@ -76,7 +79,6 @@ public class HandAniControl : MonoBehaviour
     }
     void DoContinuousTask(float playTime, float currentValue)
     {
-        Debug.Log("Continuous Started");
         if (playTime < currentValue)
         {
             handAnim.SetFloat("Direction", 1);
